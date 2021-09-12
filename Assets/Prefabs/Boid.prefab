@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4639429171066212351}
   - component: {fileID: 7466125405437852088}
   - component: {fileID: 7750728616666916710}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Boid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 5267929446988147206}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.2823777, y: 12.042031, z: -4.127861}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.27181903, y: 0.44458392, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -91,7 +91,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5267929446988147206}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -108,24 +108,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beea760784b5d554cbacddc05c19143f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 0}
-  forward: {x: 0, y: 0, z: 0}
-  avgFlockHeading: {x: 0, y: 0, z: 0}
-  avgAvoidanceHeading: {x: 0, y: 0, z: 0}
-  centreOfFlockmates: {x: 0, y: 0, z: 0}
-  numPerceivedFlockmates: 0
-  minSpeed: 2
-  maxSpeed: 5
-  perceptionRadius: 2.5
-  avoidanceRadius: 1
-  maxSteerForce: 3
-  alignWeight: 1
-  cohesionWeight: 1
-  seperateWeight: 1
-  targetWeight: 1
+  velocity: 1.99
+  velocityVariation: 0.199
+  rotationCoeff: 3.03
+  neighborDist: 1.45
+  searchLayer:
+    serializedVersion: 2
+    m_Bits: 64
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
-  boundsRadius: 0.27
-  avoidCollisionWeight: 10
-  collisionAvoidDst: 5
+    m_Bits: 144
+  boundsRadius: 4
+  avoidCollisionWeight: 5.08
+  collisionAvoidDst: 1.76

@@ -10,6 +10,8 @@ public class MeshGenerator : MonoBehaviour {
     [Header ("General Settings")]
     public DensityGenerator densityGenerator;
 
+    public LayerMask Layer;
+
     public bool fixedMapSize;
     [ConditionalHide (nameof (fixedMapSize), true)]
     public Vector3Int numChunks = Vector3Int.one;
@@ -224,6 +226,10 @@ public class MeshGenerator : MonoBehaviour {
         mesh.triangles = meshTriangles;
 
         mesh.RecalculateNormals ();
+        mesh.RecalculateNormals ();
+
+        var col = chunk.GetComponent<MeshCollider>();
+        col.sharedMesh = mesh;
     }
 
     public void UpdateAllChunks () {
@@ -332,6 +338,7 @@ public class MeshGenerator : MonoBehaviour {
     Chunk CreateChunk (Vector3Int coord) {
         GameObject chunk = new GameObject ($"Chunk ({coord.x}, {coord.y}, {coord.z})");
         chunk.transform.parent = chunkHolder.transform;
+        chunk.layer = 7;
         Chunk newChunk = chunk.AddComponent<Chunk> ();
         newChunk.coord = coord;
         return newChunk;

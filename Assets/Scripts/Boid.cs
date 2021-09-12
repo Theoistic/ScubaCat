@@ -5,14 +5,6 @@ using UnityEngine;
 public class Boid : MonoBehaviour
 {
 
-    // State
-    [HideInInspector]
-    public Vector3 position;
-    [HideInInspector]
-    public Vector3 forward;
-    //Vector3 velocity;
-
-
     [Range(0.1f, 20.0f)]
     public float velocity = 6.0f;
 
@@ -26,19 +18,6 @@ public class Boid : MonoBehaviour
     public float neighborDist = 2.0f;
 
     float noiseOffset;
-
-    // Settings
-    public float minSpeed = 2;
-    public float maxSpeed = 5;
-    public float perceptionRadius = 2.5f;
-    public float avoidanceRadius = 1;
-    public float maxSteerForce = 3;
-
-    public float alignWeight = 1;
-    public float cohesionWeight = 1;
-    public float seperateWeight = 1;
-
-    public float targetWeight = 1;
 
     public LayerMask searchLayer;
 
@@ -88,28 +67,33 @@ public class Boid : MonoBehaviour
         cohesion *= avg;
         cohesion = (cohesion - currentPosition).normalized;
 
+
         // Calculates a rotation from the vectors.
         var direction = separation + alignment + cohesion;
-        var rotation = Quaternion.FromToRotation(Vector3.forward, direction.normalized);
-
-        // Applys the rotation with interpolation.
-        if (rotation != currentRotation)
-        {
-            var ip = Mathf.Exp(-rotationCoeff * Time.deltaTime);
-            transform.rotation = Quaternion.Slerp(rotation, currentRotation, ip);
-        }
 
         if (IsHeadingForCollision())
         {
-            Vector3 collisionAvoidDir = ObstacleRays();
+            direction += ObstacleRays() * 100;
             //Vector3 collisionAvoidForce = SteerTowards(collisionAvoidDir) * avoidCollisionWeight;
-            transform.position = currentPosition + collisionAvoidDir * (_velocity * Time.deltaTime);
+            //direction = collisionAvoidDir;
         }
-        else
+
+        if (transform.position.y > 19)
+            direction += new Vector3(0, -100, 0);
+
+        var rotation = Quaternion.FromToRotation(Vector3.forward, direction.normalized);
+        //var rotation = Quaternion.LookRotation(direction.normalized);
+
+        // Applys the rotation with interpolation.
+        //if (rotation != currentRotation)
         {
-            // Moves forawrd.
-            transform.position = currentPosition + transform.forward * (_velocity * Time.deltaTime);
+            var ip = Mathf.Exp(-rotationCoeff * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(rotation, currentRotation, ip);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 40f);
         }
+
+        // Moves forawrd.
+        transform.position = currentPosition + transform.forward * (_velocity * Time.deltaTime);
     }
 
     Vector3 GetSeparationVector(Transform target)
@@ -123,7 +107,7 @@ public class Boid : MonoBehaviour
     bool IsHeadingForCollision()
     {
         RaycastHit hit;
-        if (Physics.SphereCast(position, boundsRadius, forward, out hit, collisionAvoidDst, obstacleMask))
+        if (Physics.SphereCast(transform.position, boundsRadius, transform.forward, out hit, collisionAvoidDst, obstacleMask))
         {
             return true;
         }
@@ -138,19 +122,13 @@ public class Boid : MonoBehaviour
         for (int i = 0; i < rayDirections.Length; i++)
         {
             Vector3 dir = transform.TransformDirection(rayDirections[i]);
-            Ray ray = new Ray(position, dir);
+            Ray ray = new Ray(transform.position, dir);
             if (!Physics.SphereCast(ray, boundsRadius, collisionAvoidDst, obstacleMask))
             {
                 return dir;
             }
         }
 
-        return forward;
+        return transform.forward;
     }
-
-    /*Vector3 SteerTowards(Vector3 vector)
-    {
-        Vector3 v = vector.normalized * maxSpeed - velocity;
-        return Vector3.ClampMagnitude(v, maxSteerForce);
-    }*/
 }

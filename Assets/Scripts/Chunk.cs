@@ -55,10 +55,13 @@ public class Chunk : MonoBehaviour {
         if (generateCollider) {
             if (meshCollider.sharedMesh == null) {
                 meshCollider.sharedMesh = mesh;
+                /*meshCollider.sharedMesh.RecalculateBounds();
+                meshCollider.sharedMesh.RecalculateNormals();*/
             }
             // force update
             meshCollider.enabled = false;
             meshCollider.enabled = true;
+            //meshCollider.cookingOptions = MeshColliderCookingOptions.None;
         }
 
         meshRenderer.material = mat;
